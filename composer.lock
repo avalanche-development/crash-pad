@@ -4,9 +4,99 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d90ab774a51eb74dd35c5df6e1679691",
-    "content-hash": "04d2c022ecaf24357395906f0df210e2",
-    "packages": [],
+    "hash": "e8bbabffb15b7f2fc21646eab45aeda2",
+    "content-hash": "24f95bda0496725f4d54e77ca94e20a5",
+    "packages": [
+        {
+            "name": "avalanche-development/peel",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/avalanche-development/peel.git",
+                "reference": "6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/avalanche-development/peel/zipball/6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7",
+                "reference": "6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "^0.3.2",
+                "phpunit/phpunit": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AvalancheDevelopment\\Peel\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "jacobemerick",
+                    "email": "jpemeric@gmail.com"
+                }
+            ],
+            "time": "2016-10-31 22:47:42"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "reference": "f6561bf28d520154e4b0ec72be95418abe6d9363",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "time": "2016-08-06 14:39:51"
+        }
+    ],
     "packages-dev": [
         {
             "name": "codeclimate/php-test-reporter",

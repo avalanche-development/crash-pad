@@ -39,7 +39,8 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
 
         $exception = new \Exception('some exception');
 
-        $result = (new ErrorHandler)($mockRequest, $mockResponse, $exception);
+        $handler = new ErrorHandler;
+        $result = $handler($mockRequest, $mockResponse, $exception);
         $this->assertSame($mockResponse, $result);
     }
 
@@ -71,7 +72,8 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
 
         $exception = new NotFound('some not found exception');
 
-        $result = (new ErrorHandler)($mockRequest, $mockResponse, $exception);
+        $handler = new ErrorHandler;
+        $result = $handler($mockRequest, $mockResponse, $exception);
         $this->assertSame($mockResponse, $result);
     }
 }

@@ -29,6 +29,7 @@ class ErrorHandler
         }
 
         $response = $response->withStatus($body['statusCode']);
+        $response = $response->withHeader('Content-type', 'application/json');
         $response->getBody()->write(json_encode($body));
         return $response;
     }

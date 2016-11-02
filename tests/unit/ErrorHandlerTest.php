@@ -30,6 +30,10 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
             ->with(500)
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
+            ->method('withHeader')
+            ->with('Content-type', 'application/json')
+            ->will($this->returnSelf());
+        $mockResponse->expects($this->once())
             ->method('getBody')
             ->willReturn($mockBody);
 
@@ -56,6 +60,10 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
         $mockResponse->expects($this->once())
             ->method('withStatus')
             ->with(404)
+            ->will($this->returnSelf());
+        $mockResponse->expects($this->once())
+            ->method('withHeader')
+            ->with('Content-type', 'application/json')
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
             ->method('getBody')

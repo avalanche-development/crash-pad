@@ -3,6 +3,10 @@ crash-pad
 
 Error handler that utilizes [peel](https://github.com/avalanche-development/peel) exceptions to standardize responses.
 
+[![Build Status](https://travis-ci.org/avalanche-development/crash-pad.svg?branch=master)](https://travis-ci.org/avalanche-development/crash-pad)
+[![Code Climate](https://codeclimate.com/github/avalanche-development/crash-pad/badges/gpa.svg)](https://codeclimate.com/github/avalanche-development/crash-pad)
+[![Test Coverage](https://codeclimate.com/github/avalanche-development/crash-pad/badges/coverage.svg)](https://codeclimate.com/github/avalanche-development/crash-pad/coverage)
+
 ## Installation
 
 It's recommended that you use [Composer](https://getcomposer.org/) to install crash-pad.

@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "e8bbabffb15b7f2fc21646eab45aeda2",
-    "content-hash": "24f95bda0496725f4d54e77ca94e20a5",
+    "hash": "dad69b08b6de7c8be269bdcdbb724cf7",
+    "content-hash": "5e5b05b288a86117aa4365de396fda96",
     "packages": [
         {
             "name": "avalanche-development/peel",
-            "version": "0.1.0",
+            "version": "0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/avalanche-development/peel.git",
-                "reference": "6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7"
+                "reference": "4c8357f694b956456390cbbdfc22ca7b3ab26748"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/avalanche-development/peel/zipball/6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7",
-                "reference": "6de1fdcb80ac7f9aa8aae2f691e32747d2e1bab7",
+                "url": "https://api.github.com/repos/avalanche-development/peel/zipball/4c8357f694b956456390cbbdfc22ca7b3ab26748",
+                "reference": "4c8357f694b956456390cbbdfc22ca7b3ab26748",
                 "shasum": ""
             },
             "require": {
@@ -44,7 +44,7 @@
                     "email": "jpemeric@gmail.com"
                 }
             ],
-            "time": "2016-10-31 22:47:42"
+            "time": "2016-11-06 00:12:10"
         },
         {
             "name": "psr/http-message",

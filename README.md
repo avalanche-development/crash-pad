@@ -67,4 +67,4 @@ $ phpunit
 
 ## License
 
-crash-pad is licensed under the MIT license. See [License File](LICENSE.md) for more information.
+crash-pad is licensed under the MIT license. See [License File](LICENSE) for more information.

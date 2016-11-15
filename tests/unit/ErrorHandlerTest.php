@@ -7,9 +7,25 @@ use PHPUnit_Framework_TestCase;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\StreamInterface as Stream;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 class ErrorHandlerTest extends PHPUnit_Framework_TestCase
 {
+
+    public function testInstanceOfLoggerAwareInterface()
+    {
+        $handler = new ErrorHandler;
+
+        $this->assertInstanceOf(LoggerAwareInterface::class, $handler);
+    }
+
+    public function testInstanceHasLogger()
+    {
+        $handler = new ErrorHandler;
+
+        $this->assertAttributeInstanceOf(LoggerInterface::class, 'logger', $handler);
+    }
 
     public function testInvokeHandlesNormalExceptionAsServerError()
     {
@@ -75,5 +91,37 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
         $handler = new ErrorHandler;
         $result = $handler($mockRequest, $mockResponse, $exception);
         $this->assertSame($mockResponse, $result);
+    }
+
+    public function testInvokeLogsExceptions()
+    {
+        $exception = new \Exception('some message');
+
+        $reflectedHandler = new \ReflectionClass(ErrorHandler::class);
+        $reflectedLogger = $reflectedHandler->getProperty('logger');
+        $reflectedLogger->setAccessible(true);
+
+        $mockLogger = $this->createMock(LoggerInterface::class);
+        $mockLogger->expects($this->once())
+            ->method('notice')
+            ->with("ErrorHandler: 500 {$exception->getMessage()}");
+        $mockLogger->expects($this->once())
+            ->method('debug')
+            ->with($exception->getTraceAsString());
+
+        $mockRequest = $this->createMock(Request::class);
+        $mockBody = $this->createMock(Stream::class);
+
+        $mockResponse = $this->createMock(Response::class);
+        $mockResponse->method('withStatus')
+            ->will($this->returnSelf());
+        $mockResponse->method('withHeader')
+            ->will($this->returnSelf());
+        $mockResponse->method('getBody')
+            ->willReturn($mockBody);
+
+        $handler = new ErrorHandler;
+        $reflectedLogger->setValue($handler, $mockLogger);
+        $handler($mockRequest, $mockResponse, $exception);
     }
 }

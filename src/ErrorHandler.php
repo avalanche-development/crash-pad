@@ -5,9 +5,19 @@ namespace AvalancheDevelopment\CrashPad;
 use AvalancheDevelopment\Peel\HttpErrorInterface;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerAwareTrait;
+use Psr\Log\NullLogger;
 
-class ErrorHandler
+class ErrorHandler implements LoggerAwareInterface
 {
+
+    use LoggerAwareTrait;
+
+    public function __construct()
+    {
+        $this->logger = new NullLogger;
+    }
 
     /**
      * @param Request $request
@@ -27,6 +37,9 @@ class ErrorHandler
             $body['statusCode'] = $exception->getStatusCode();
             $body['error'] = $exception->getStatusMessage();
         }
+
+        $this->logger->notice("ErrorHandler: {$body['statusCode']} {$body['message']}");
+        $this->logger->debug($exception->getTraceAsString());
 
         $response = $response->withStatus($body['statusCode']);
         $response = $response->withHeader('Content-type', 'application/json');

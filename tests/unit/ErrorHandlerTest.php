@@ -159,4 +159,28 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
         $reflectedLogger->setValue($handler, $mockLogger);
         $handler($mockRequest, $mockResponse, $exception);
     }
+
+    public function testGetStreamFetchesStream()
+    {
+        $mockData = [
+            'key' => 'value',
+        ];
+        $mockDataEncoded = json_encode($mockData);
+
+        $reflectedErrorHandler = new ReflectionClass(ErrorHandler::class);
+        $reflectedGetStream = $reflectedErrorHandler->getMethod('getStream');
+        $reflectedGetStream->setAccessible(true);
+
+        $handler = $this->getMockBuilder(ErrorHandler::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $result = $reflectedGetStream->invokeArgs($handler, [
+            $mockData,
+        ]);
+
+        $this->assertInstanceOf(Stream::class, $result);
+        $this->assertEquals($mockDataEncoded, $result->__toString());
+    }
 }

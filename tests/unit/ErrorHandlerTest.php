@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\StreamInterface as Stream;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 class ErrorHandlerTest extends PHPUnit_Framework_TestCase
 {
@@ -29,16 +30,15 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
 
     public function testInvokeHandlesNormalExceptionAsServerError()
     {
-        $mockRequest = $this->createMock(Request::class);
+        $mockBody = [
+            'statusCode' => 500,
+            'error' => 'Internal Server Error',
+            'message' => 'some exception',
+        ];
 
-        $mockBody = $this->createMock(Stream::class);
-        $mockBody->expects($this->once())
-            ->method('write')
-            ->with(json_encode([
-                'statusCode' => 500,
-                'error' => 'Internal Server Error',
-                'message' => 'some exception',
-            ]));
+        $mockBodyStream = $this->createMock(Stream::class);
+        $mockLogger = $this->createMock(LoggerInterface::class);
+        $mockRequest = $this->createMock(Request::class);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -47,31 +47,48 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
             ->method('withHeader')
-            ->with('Content-type', 'application/json')
+            ->with('Content-Type', 'application/json')
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
-            ->method('getBody')
-            ->willReturn($mockBody);
+            ->method('withBody')
+            ->with($mockBodyStream)
+            ->will($this->returnSelf());
 
         $exception = new \Exception('some exception');
 
-        $handler = new ErrorHandler;
+        $reflectedErrorHandler = new ReflectionClass(ErrorHandler::class);
+        $reflectedLogger = $reflectedErrorHandler->getProperty('logger');
+        $reflectedLogger->setAccessible(true);
+
+        $handler = $this->getMockBuilder(ErrorHandler::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getStream',
+            ])
+            ->getMock();
+        $handler->expects($this->once())
+            ->method('getStream')
+            ->with($mockBody)
+            ->willReturn($mockBodyStream);
+
+        $reflectedLogger->setValue($handler, $mockLogger);
+
         $result = $handler($mockRequest, $mockResponse, $exception);
+
         $this->assertSame($mockResponse, $result);
     }
 
     public function testInvokeHandlesHttpErrorAsCustomError()
     {
-        $mockRequest = $this->createMock(Request::class);
+        $mockBody = [
+            'statusCode' => 404,
+            'error' => 'Not Found',
+            'message' => 'some not found exception',
+        ];
 
-        $mockBody = $this->createMock(Stream::class);
-        $mockBody->expects($this->once())
-            ->method('write')
-            ->with(json_encode([
-                'statusCode' => 404,
-                'error' => 'Not Found',
-                'message' => 'some not found exception',
-            ]));
+        $mockBodyStream = $this->createMock(Stream::class);
+        $mockLogger = $this->createMock(LoggerInterface::class);
+        $mockRequest = $this->createMock(Request::class);
 
         $mockResponse = $this->createMock(Response::class);
         $mockResponse->expects($this->once())
@@ -80,16 +97,34 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
             ->method('withHeader')
-            ->with('Content-type', 'application/json')
+            ->with('Content-Type', 'application/json')
             ->will($this->returnSelf());
         $mockResponse->expects($this->once())
-            ->method('getBody')
-            ->willReturn($mockBody);
+            ->method('withBody')
+            ->with($mockBodyStream)
+            ->will($this->returnSelf());
 
         $exception = new NotFound('some not found exception');
 
-        $handler = new ErrorHandler;
+        $reflectedErrorHandler = new ReflectionClass(ErrorHandler::class);
+        $reflectedLogger = $reflectedErrorHandler->getProperty('logger');
+        $reflectedLogger->setAccessible(true);
+
+        $handler = $this->getMockBuilder(ErrorHandler::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
+                'getStream',
+            ])
+            ->getMock();
+        $handler->expects($this->once())
+            ->method('getStream')
+            ->with($mockBody)
+            ->willReturn($mockBodyStream);
+
+        $reflectedLogger->setValue($handler, $mockLogger);
+
         $result = $handler($mockRequest, $mockResponse, $exception);
+
         $this->assertSame($mockResponse, $result);
     }
 
@@ -123,5 +158,29 @@ class ErrorHandlerTest extends PHPUnit_Framework_TestCase
         $handler = new ErrorHandler;
         $reflectedLogger->setValue($handler, $mockLogger);
         $handler($mockRequest, $mockResponse, $exception);
+    }
+
+    public function testGetStreamFetchesStream()
+    {
+        $mockData = [
+            'key' => 'value',
+        ];
+        $mockDataEncoded = json_encode($mockData);
+
+        $reflectedErrorHandler = new ReflectionClass(ErrorHandler::class);
+        $reflectedGetStream = $reflectedErrorHandler->getMethod('getStream');
+        $reflectedGetStream->setAccessible(true);
+
+        $handler = $this->getMockBuilder(ErrorHandler::class)
+            ->disableOriginalConstructor()
+            ->setMethods(null)
+            ->getMock();
+
+        $result = $reflectedGetStream->invokeArgs($handler, [
+            $mockData,
+        ]);
+
+        $this->assertInstanceOf(Stream::class, $result);
+        $this->assertEquals($mockDataEncoded, $result->__toString());
     }
 }

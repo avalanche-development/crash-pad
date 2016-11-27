@@ -3,6 +3,7 @@
 namespace AvalancheDevelopment\CrashPad;
 
 use AvalancheDevelopment\Peel\HttpErrorInterface;
+use GuzzleHttp\Psr7;
 use Psr\Http\Message\RequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Log\LoggerAwareInterface;
@@ -41,9 +42,22 @@ class ErrorHandler implements LoggerAwareInterface
         $this->logger->notice("ErrorHandler: {$body['statusCode']} {$body['message']}");
         $this->logger->debug($exception->getTraceAsString());
 
+        $bodyStream = $this->getStream($body);
+
         $response = $response->withStatus($body['statusCode']);
-        $response = $response->withHeader('Content-type', 'application/json');
-        $response->getBody()->write(json_encode($body));
+        $response = $response->withHeader('Content-Type', 'application/json');
+        $response = $response->withBody($bodyStream);
+
         return $response;
+    }
+
+    /**
+     * @param array $body
+     * @return StreamInterface
+     */
+    protected function getStream(array $body)
+    {
+        $bodyString = json_encode($body);
+        return Psr7\stream_for($bodyString);
     }
 }
